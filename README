@@ -1,4 +1,46 @@
-smart open commands::
+Overview
+========
+
+Ever since I discovered CDPATH last year I've been thinking wouldn't it
+be great if Vim could access files using CDPATH without having to chdir
+anywhere first. In other words, why can't Vim understand that it has to
+look for tklbam/restore.py in the CDPATH instead of telling me that it
+doesn't exist in the current working directory?
+
+I started experimenting with Vim hooks and eventually figured out how to
+implement this as a generic mechanism that defines a more useful way for
+Vim to access the filesystem.
+
+Throw in a Python implemented autocomplete algorithm, and in a nutshell, thats
+how smart open works.
+
+Configuration
+=============
+
+In your bashrc file:;
+
+    export _CDPATH=$CDPATH
+
+Path lookup algorithm
+=====================
+
+1. Try to lookup path in cdpath
+2. If no such file exists, try looking up path as a tag
+3. If no such tag exists, assume its a new file
+
+   Lookup the path of this new file by trying to find its parent directory in
+   the cdpath. If it doesn't have a parent directory, assume the new file
+   should be created in the current working directory.
+
+Special cases::
+
+    /path   path is absolute (not looked up)
+    ./path  path is relative to the current working directory (not looked up)
+
+Usage
+=====
+
+commands::
 
     :O[pen]         [ <path> ]
     :Ta[bOpen]      [ <path> ]
@@ -6,3 +48,26 @@ smart open commands::
 
     if no <path> argument provided:
         defaults to taking <path> from word under cursor
+
+Note: shell-style autocomplete is supported, but only for filesystem paths,
+not tags.
+
+key bindings::
+
+    gf      open file or tag (under cursor)
+    CTRL-]  open file or tag (under cursor)
+
+    <C-W>f  open file (under cursor) in split window
+    <C-T>   go back
+
+Note: overloaded vim native keybindings, with new enhanced functionality.
+
+mouse bindings (browser-inspired)::
+
+    left double click to open link
+
+        doubleclick         open
+        shift-doubleclick   split open
+        ctrl-doubleclick    tab open (like in a browser)
+
+    ctrl-rightclick         go back
