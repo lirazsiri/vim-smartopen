@@ -1,0 +1,8 @@
+smart open commands::
+
+    :O[pen]         [ <path> ]
+    :Ta[bOpen]      [ <path> ]
+    :Sp[litOpen]    [ <path> ]
+
+    if no <path> argument provided:
+        defaults to taking <path> from word under cursor
